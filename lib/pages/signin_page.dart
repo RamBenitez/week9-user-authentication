@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 
+
 import 'signup_page.dart';
 
 class SignInPage extends StatefulWidget {
-  const SignInPage({super.key});
+  const SignInPage({super.key}): super(key:key);
 
   @override
   State<SignInPage> createState() => _SignInPageState();
@@ -56,13 +57,13 @@ class _SignInPageState extends State<SignInPage> {
               border: OutlineInputBorder(),
               label: Text("Email"),
               hintText: "juandelacruz09@gmail.com"),
-          onSaved: (value) => setState(() => email = value),
           validator: (value) {
-            if (value == null || value.isEmpty) {
+            if (value == null || value.isEmpty | !value.contains('@')) {
               return "Please enter your email";
             }
             return null;
           },
+          onSaved: (value) => setState(() => email = value),
         ),
       );
 
@@ -74,13 +75,13 @@ class _SignInPageState extends State<SignInPage> {
               label: Text("Password"),
               hintText: "******"),
           obscureText: true,
-          onSaved: (value) => setState(() => password = value),
           validator: (value) {
             if (value == null || value.isEmpty) {
               return "Please enter your password";
             }
             return null;
           },
+          onSaved: (value) => setState(() => password = value),
         ),
       );
 

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+  const SignUpPage({super.key}): super(key:key);
 
   @override
   State<SignUpPage> createState() => _SignUpState();
@@ -13,6 +13,8 @@ class _SignUpState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   String? email;
   String? password;
+  String? firstName;
+  String? lastName;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class _SignUpState extends State<SignUpPage> {
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [heading, emailField, passwordField, submitButton],
+                children: [heading,firstNameField, lastNameField, emailField, passwordField, submitButton],
               ),
             )),
       ),
@@ -40,6 +42,42 @@ class _SignUpState extends State<SignUpPage> {
         ),
       );
 
+  Widget get firstNameField => Padding(
+      padding: const EdgeInsets.only(bottom: 30),
+      child: TextFormField(
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: "First Name",
+          hintText: "Enter your first name",
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return "First Name is required";
+          }
+          return null;
+        },
+        onSaved: (value) => setState(() => firstName = value),
+      ),
+    );
+
+  Widget get lastNameField => Padding(
+        padding: const EdgeInsets.only(bottom: 30),
+        child: TextFormField(
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            labelText: "Last Name",
+            hintText: "Enter your last name",
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Last Name is required";
+            }
+            return null;
+          },
+          onSaved: (value) => setState(() => lastName = value),
+        ),
+      );
+
   Widget get emailField => Padding(
         padding: const EdgeInsets.only(bottom: 30),
         child: TextFormField(
@@ -49,13 +87,14 @@ class _SignUpState extends State<SignUpPage> {
               hintText: "Enter a valid email"),
           onSaved: (value) => setState(() => email = value),
           validator: (value) {
-            if (value == null || value.isEmpty) {
+            if (value == null || value.isEmpty || !value.contains('@')) {
               return "Please enter a valid email format";
             }
             return null;
           },
         ),
       );
+  
 
   Widget get passwordField => Padding(
         padding: const EdgeInsets.only(bottom: 30),
@@ -63,15 +102,15 @@ class _SignUpState extends State<SignUpPage> {
           decoration: const InputDecoration(
               border: OutlineInputBorder(),
               label: Text("Password"),
-              hintText: "At least 8 characters"),
+              hintText: "At least 6 characters"),
           obscureText: true,
-          onSaved: (value) => setState(() => password = value),
           validator: (value) {
-            if (value == null || value.isEmpty) {
+            if (value == null || value.length <6) {
               return "Please enter a valid password";
             }
             return null;
           },
+          onSaved: (value) => setState(() => password = value),
         ),
       );
 
@@ -82,7 +121,7 @@ class _SignUpState extends State<SignUpPage> {
           await context
               .read<UserAuthProvider>()
               .authService
-              .signUp(email!, password!);
+              .signUp(email!, password!, firstName!, lastName!,);
 
           // check if the widget hasn't been disposed of after an asynchronous action
           if (mounted) Navigator.pop(context);
